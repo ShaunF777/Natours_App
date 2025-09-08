@@ -1,16 +1,24 @@
 const Tour = require('./../models/tourModel');
 
 // Loads this getAllTours module onto the exports Object
-exports.getAllTours = (req, res) => {
-  console.log(req.requestTime);
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    // results: tours.length,
-    // data: {
-    //   tours,
-    // },
-  });
+exports.getAllTours = async (req, res) => {
+  try {
+    const tours = await Tour.find(); // Await the return of a promise for all the docs in the Tour collection
+
+    res.status(200).json({
+      status: 'success',
+      results: tours.length, // give us the array length
+      data: {
+        // Envelope the tours in data
+        tours,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
 exports.getTour = (req, res) => {
@@ -29,9 +37,11 @@ exports.getTour = (req, res) => {
 
 exports.createTour = async (req, res) => {
   try {
-    // Call the create method on the Tour model to create a new document
+    // Call the create method on the Tour model to create a new document.
+    // Store the returned body inside the newTour var
     const newTour = await Tour.create(req.body); // waits for req.body to be filled
 
+    // Respond to the client
     res.status(201).json({
       status: 'success',
       data: {
@@ -42,7 +52,7 @@ exports.createTour = async (req, res) => {
     // Typically a creation validation error for rejected promise
     res.status(400).json({
       status: 'fail',
-      message: err,
+      message: 'Invalid data sent!',
     });
   }
 };
