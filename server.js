@@ -11,13 +11,18 @@ const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
   process.env.DATABASE_PASSWORD,
 );
-// Connect to the database, deal with deprecation warnings. .connect method returns a promise 
+// Connect to the database, deal with deprecation warnings. .connect method returns a promise
 mongoose
   .connect(DB) // We no longer need the options because the MongoDB Node.js driver has simplified things
   .then(() => {
     //console.log(con.connections); // to show everything inside the connections object
     console.log('DB connection successful!');
   });
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`App running on port ${port}...`);
+});
 
 // --- ROUTE FLOW goes like this ---
 // 1. We recieve the request here. Then it goes to app.js
